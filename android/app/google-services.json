@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "586670282928",
+    "project_id": "zumra-flutter-app",
+    "storage_bucket": "zumra-flutter-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586670282928:android:69e1b0ea1bbbfaf762c375",
+        "android_client_info": {
+          "package_name": "com.example.flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586670282928-bccqm6m69iri03envttsgt4or5i9s2k8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_app",
+            "certificate_hash": "99277c59f6d61f9a000009daf4867b95c2b7a670"
+          }
+        },
+        {
+          "client_id": "586670282928-76svb24m4pjbmqkcv018ras416enc2kl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPZiLDtnOFyLLHAYctysDzp9piM9r6TXw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586670282928-76svb24m4pjbmqkcv018ras416enc2kl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
