@@ -4,6 +4,7 @@ import 'package:flutter_app/models/shop_app/shop_login_model.dart';
 import 'package:flutter_app/modules/shop_app/shop_login/cubit/shop_login_states.dart';
 import 'package:flutter_app/network/local/cache_sharedpref.dart';
 import 'package:flutter_app/network/remote/dio_helper.dart';
+import 'package:flutter_app/shared/components/components.dart';
 import 'package:flutter_app/shared/components/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -159,6 +160,25 @@ class ShopLoginCubit extends Cubit<ShopLoginStates> {
       print('failed to login with google');
       print('$error alo alo');
       emit(ShopGoogleLoginFailedState());
+    });
+  }
+
+
+   recoverPassword(String email) async{
+    await DioHelper.post(
+      path: RECOVER_PASSWORD_ZUMRA,
+      token: token,
+      data: {
+        'email':'$email',
+      },
+    ).then((value) {
+      printFullText(value.statusMessage);
+      emit(ShopPasswordRecoveryLoginSuccessState());
+    }).catchError((error){
+      // print(token.toString());
+      // print(userData.id.toString());
+      print(error.toString());
+      emit(ShopPasswordRecoveryLoginFailureState(error.toString()));
     });
   }
 }

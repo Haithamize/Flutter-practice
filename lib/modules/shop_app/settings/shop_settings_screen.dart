@@ -7,6 +7,7 @@ import 'package:flutter_app/shared/components/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class ShopSettingsScreen extends StatelessWidget {
@@ -16,7 +17,10 @@ class ShopSettingsScreen extends StatelessWidget {
   var lastNameController = TextEditingController();
   var userEmailController = TextEditingController();
   var userNumberController = TextEditingController();
+  var resetPasswordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+
+  // var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -177,6 +181,51 @@ class ShopSettingsScreen extends StatelessWidget {
                 }
                 signOut(context);
               }, 'LOGOUT'),
+              IconButton(
+                  icon: ShopCubit.get(context).userData.emailVerified? Icon(Icons.verified,color: Colors.green,): Icon(Icons.verified,color: Colors.grey,),
+                  onPressed: (){
+                    if(ShopCubit.get(context).userData.emailVerified){
+                      makeToast(message: 'Your email is already verified',
+                      toastColor: Colors.green,
+                        gravity: ToastGravity.BOTTOM,
+                      );
+                    }else{
+                      //A new verification link is sent. Check email
+                    ShopCubit.get(context).verifyEmailAddress();
+                    makeToast(message: 'A new verification link is sent. Check email',
+                      toastColor: Colors.orange,
+                      gravity: ToastGravity.BOTTOM,
+                    );
+                    }
+                  }
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Text('Recover Password'),
+                  Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      ShopCubit.get(context).recoverPassword(resetPasswordController.text.toString());
+
+                      if(state is ShopPasswordRecoverySuccessState){
+                        makeToast(
+                          gravity: ToastGravity.BOTTOM,
+                          toastColor: Colors.green,
+                          message: 'Email sent successfully',
+                        );
+                      }else if(state is ShopPasswordRecoveryFailureState){
+                        makeToast(
+                          gravity: ToastGravity.BOTTOM,
+                          toastColor: Colors.red,
+                          message: 'Something went wrong please try again',
+                        );
+                      }
+                    },
+                    child: Text('Recover'),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

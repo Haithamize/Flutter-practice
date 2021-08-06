@@ -26,3 +26,10 @@ class ShopFacebookLoginFailedState extends ShopLoginStates{}
 class ShopGoogleLoginSuccessState extends ShopLoginStates{}
 class ShopGoogleLoginCancelledState extends ShopLoginStates{}
 class ShopGoogleLoginFailedState extends ShopLoginStates{}
+
+class ShopPasswordRecoveryLoginSuccessState extends ShopLoginStates{}
+class ShopPasswordRecoveryLoginFailureState extends ShopLoginStates{
+  final String error;
+
+  ShopPasswordRecoveryLoginFailureState(this.error);
+}

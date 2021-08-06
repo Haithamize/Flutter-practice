@@ -8,6 +8,7 @@ class UserModel {
   String mobile;
   String gender;
   String birthDate;
+  int id;
 
   UserModel.fromJson(Map<String,dynamic> json){
     firstName = json['firstName'];
@@ -18,5 +19,6 @@ class UserModel {
     mobile = json['mobile'];
     gender = json['gender'];
     birthDate = json['birthDate'];
+    id = json['_id'];
   }
 }

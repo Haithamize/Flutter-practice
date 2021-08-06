@@ -48,21 +48,19 @@ Widget buildDefaultTFF(
       keyboardType: type,
     );
 
-Widget buildDefaultButton(Function function, String name) {
+Widget buildDefaultButton(Function function, String name,
+    {Color containerColor, Color textColor}) {
   return Container(
       width: double.infinity,
-      color: Colors.blue,
+      color: containerColor == null ? Colors.blue : containerColor,
       child: IconButton(
-          icon: Text(
-            '${name.toUpperCase()}',
-            style: TextStyle(color: Colors.white),
-          ),
-          onPressed: function,
-      )
-  );
+        icon: Text(
+          '${name.toUpperCase()}',
+          style: TextStyle(color: textColor == null ? Colors.white : textColor),
+        ),
+        onPressed: function,
+      ));
 }
-
-
 
 Widget buildTaskItem(Map obj, context) {
   return Dismissible(
@@ -290,8 +288,7 @@ void makeToast({
   String message,
   MaterialColor toastColor,
   ToastGravity gravity,
-
-}){
+}) {
   Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
@@ -299,42 +296,39 @@ void makeToast({
       timeInSecForIosWeb: 1,
       backgroundColor: toastColor,
       textColor: Colors.white,
-      fontSize: 16.0
-  );
+      fontSize: 16.0);
 }
 
-
-  signOut(context){
+signOut(context) {
   CacheHelper.removeData('token').then((value) {
-    if(value){//lw el value true w da eli rag3 mn el remove method bta3t el shared pref w da ma3naha eno successfully removed the data
+    if (value) {
+      //lw el value true w da eli rag3 mn el remove method bta3t el shared pref w da ma3naha eno successfully removed the data
       navigateToAndReplace(context, ShopLoginScreen());
     }
   });
 }
 
-
-void printFullText(String text){
+void printFullText(String text) {
   final pattern = RegExp('.{1,800}');
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
 
-
-Widget makeGender(TextEditingController genderController){
- return GenderPickerWithImage(
+Widget makeGender(TextEditingController genderController) {
+  return GenderPickerWithImage(
     showOtherGender: false,
     verticalAlignedText: false,
     selectedGender: Gender.Male,
-    selectedGenderTextStyle: TextStyle(
-        color: Color(0xFF8b32a8), fontWeight: FontWeight.bold),
-    unSelectedGenderTextStyle: TextStyle(
-        color: Colors.white, fontWeight: FontWeight.normal),
+    selectedGenderTextStyle:
+        TextStyle(color: Color(0xFF8b32a8), fontWeight: FontWeight.bold),
+    unSelectedGenderTextStyle:
+        TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
     onChanged: (Gender gender) {
       // print(gender.index);
-      if(gender.index == 0){
+      if (gender.index == 0) {
         genderController.text = 'Male';
-      }else if(gender.index == 1){
+      } else if (gender.index == 1) {
         genderController.text = 'Female';
-      }else{
+      } else {
         genderController.text = 'Other';
       }
     },

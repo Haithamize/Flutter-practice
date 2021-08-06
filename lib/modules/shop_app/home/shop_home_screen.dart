@@ -5,15 +5,14 @@ import 'package:flutter_app/layout/shop_app/cubit/shop_cubit.dart';
 import 'package:flutter_app/layout/shop_app/cubit/shop_states.dart';
 import 'package:flutter_app/models/shop_app/shop_categories_model.dart';
 import 'package:flutter_app/models/shop_app/shop_home_model.dart';
+import 'package:flutter_app/network/local/cache_sharedpref.dart';
 import 'package:flutter_app/shared/components/components.dart';
+import 'package:flutter_app/shared/components/constants.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-
-
 class ShopHomeScreen extends StatefulWidget {
-
   @override
   _ShopHomeScreenState createState() => _ShopHomeScreenState();
 }
@@ -25,12 +24,25 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
     super.dispose();
     _refreshController.dispose();
   }
+
   final ScrollController scrollController = ScrollController();
 
   List<Widget> banners = [
-    Image(image: NetworkImage('https://sc04.alicdn.com/kf/He3ab10fe009547279911eda7ed453029o.jpg'),width: double.infinity,),
-    Image(image: NetworkImage('https://sc04.alicdn.com/kf/H50fd610248c44de58fc9c3b14165e6c9z.jpg'),width: double.infinity,),
-    Image(image: NetworkImage('https://sc04.alicdn.com/kf/H7b1ef3f55e6d4506bef5d01d02651030f.jpg'),width: double.infinity,),
+    Image(
+      image: NetworkImage(
+          'https://sc04.alicdn.com/kf/He3ab10fe009547279911eda7ed453029o.jpg'),
+      width: double.infinity,
+    ),
+    Image(
+      image: NetworkImage(
+          'https://sc04.alicdn.com/kf/H50fd610248c44de58fc9c3b14165e6c9z.jpg'),
+      width: double.infinity,
+    ),
+    Image(
+      image: NetworkImage(
+          'https://sc04.alicdn.com/kf/H7b1ef3f55e6d4506bef5d01d02651030f.jpg'),
+      width: double.infinity,
+    ),
   ];
 
   // void setupScrollController(context){ //hst5dm el function de 3shan ara2b ay ta8yer y7sl 3la el listview 3ndi 3n tri2 eni h3ml add le listner 3la el controller bt3ha
@@ -46,16 +58,16 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
   // }
 
   RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: false);
 
-  void _onRefresh() async{
+  void _onRefresh() async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
   }
 
-  void _onLoading() async{
+  void _onLoading() async {
     // monitor network fetch
     ShopCubit.get(context).getHomeDataFromApi();
     // if failed,use loadFailed(),if no data return,use LoadNodata()
@@ -65,56 +77,57 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocConsumer<ShopCubit, ShopStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        if (state is ShopUserSuccessState) {
+          CacheHelper.setData('id', ShopCubit.get(context).userData.id);
+          id = ShopCubit.get(context).userData.id;
+          print(id);
+        }
         // setupScrollController(context);
         return Conditional.single(
           context: context,
-            conditionBuilder: (context) {
-              return ShopCubit.get(context).shopHomeModel != null && ShopCubit.get(context).shopCategoriesModel != null;
-            },
+          conditionBuilder: (context) {
+            return ShopCubit.get(context).shopHomeModel != null &&
+                ShopCubit.get(context).shopCategoriesModel != null;
+          },
           fallbackBuilder: (context) {
             return Center(child: CircularProgressIndicator());
           },
           widgetBuilder: (context) {
-            return buildShopHomeScreen(ShopCubit.get(context).shopHomeModel, context, ShopCubit.get(context).shopCategoriesModel);
+            return buildShopHomeScreen(ShopCubit.get(context).shopHomeModel,
+                context, ShopCubit.get(context).shopCategoriesModel);
           },
         );
       },
     );
   }
 
-
-
-  Widget buildShopHomeScreen(ShopHomeModel shopHomeModel,context, ShopCategoriesModel shopCategoriesModel) {
+  Widget buildShopHomeScreen(ShopHomeModel shopHomeModel, context,
+      ShopCategoriesModel shopCategoriesModel) {
     return SmartRefresher(
       enablePullDown: true,
       physics: BouncingScrollPhysics(),
       enablePullUp: true,
       header: WaterDropMaterialHeader(),
       footer: CustomFooter(
-        builder: (BuildContext context,LoadStatus mode){
-          Widget body ;
-          if(mode==LoadStatus.idle){
-            body =  CircularProgressIndicator.adaptive();
-          }
-          else if(mode==LoadStatus.loading){
-            body =  CupertinoActivityIndicator();
-          }
-          else if(mode == LoadStatus.failed){
+        builder: (BuildContext context, LoadStatus mode) {
+          Widget body;
+          if (mode == LoadStatus.idle) {
+            body = CircularProgressIndicator.adaptive();
+          } else if (mode == LoadStatus.loading) {
+            body = CupertinoActivityIndicator();
+          } else if (mode == LoadStatus.failed) {
             body = Text("Load Failed!Click retry!");
-          }
-          else if(mode == LoadStatus.canLoading){
+          } else if (mode == LoadStatus.canLoading) {
             body = Text("release to load more");
-          }
-          else{
+          } else {
             body = Text("No more Data");
           }
           return Container(
             height: 55.0,
-            child: Center(child:body),
+            child: Center(child: body),
           );
         },
       ),
@@ -129,11 +142,14 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text('Hot & New', style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),),
+              child: Text(
+                'Hot & New',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
             ),
             CarouselSlider(
               items: banners,
@@ -172,37 +188,47 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Categories', style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),),
+                  Text(
+                    'Categories',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
                   SizedBox(
                     height: 15,
                   ),
                   Container(
                     height: 102,
                     child: ListView.separated(
-                      physics: BouncingScrollPhysics(),
-                      shrinkWrap: true,
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
-                        itemBuilder: (context,index){
-                          return buildCategoryItem(shopCategoriesModel.categories[index], index, shopCategoriesModel.categories[index].image[0]);
+                        itemBuilder: (context, index) {
+                          return buildCategoryItem(
+                              shopCategoriesModel.categories[index],
+                              index,
+                              shopCategoriesModel.categories[index].image[0]);
                         },
-                        separatorBuilder: (context,index){
-                          return SizedBox(width: 12,);
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            width: 12,
+                          );
                         },
-                        itemCount: 3
-                    ),
-                  ),//da el horizontal listview representing the categories
+                        itemCount: 3),
+                  ), //da el horizontal listview representing the categories
                   SizedBox(
                     height: 15,
                   ),
-                  Text('Products', style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),),
+                  Text(
+                    'Products',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -215,7 +241,10 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return  buildProductItem(ShopCubit.get(context).oldAndNewItems[index], index, context);
+                  return buildProductItem(
+                      ShopCubit.get(context).oldAndNewItems[index],
+                      index,
+                      context);
                 },
                 itemCount: ShopCubit.get(context).oldAndNewItems.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -233,7 +262,7 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
                 //     (index) =>
                 //         buildProductItem(ShopCubit.get(context).oldAndNewItems[index], index)),
               ),
-            ),// da el gridView
+            ), // da el gridView
           ],
         ),
       ),
@@ -287,7 +316,9 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
                         1.1, //el height gwa el text style by2arap el masafat ben el lines eli mktola
                   ),
                 ),
-                SizedBox(height: 5,),
+                SizedBox(
+                  height: 5,
+                ),
                 Row(
                   children: [
                     Text(
@@ -331,12 +362,15 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
                         iconSize: 15,
                         color: Colors.white,
                         onPressed: () {
-                          ShopCubit.get(context).changeColorOfFavoriteIcon(docs.id);
+                          ShopCubit.get(context)
+                              .changeColorOfFavoriteIcon(docs.id);
                           print('tapped item: ' + '${docs.id}');
                         },
                       ),
                       radius: 17,
-                      backgroundColor: ShopCubit.get(context).isFavorite? Colors.blue : Colors.grey,
+                      backgroundColor: ShopCubit.get(context).isFavorite
+                          ? Colors.blue
+                          : Colors.grey,
                     ),
                   ],
                 ),
@@ -355,15 +389,16 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
     );
   }
 
-  Widget buildCategoryItem(Categories categories, index, ImageModel image){
+  Widget buildCategoryItem(Categories categories, index, ImageModel image) {
     return Container(
       height: 100,
       width: 100,
       child: Stack(
         alignment: AlignmentDirectional.bottomCenter,
-        children:
-        [
-          Image(image: NetworkImage('${index == 0 || image == null? 'https://wp-dev.zumrafood.com/wp-content/uploads/2021/04/White-basmati-with-mushroom-oyster-sauce-1.jpg' : image.url}'),
+        children: [
+          Image(
+            image: NetworkImage(
+                '${index == 0 || image == null ? 'https://wp-dev.zumrafood.com/wp-content/uploads/2021/04/White-basmati-with-mushroom-oyster-sauce-1.jpg' : image.url}'),
             height: 100,
             width: 100,
             fit: BoxFit.cover,
@@ -371,15 +406,17 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
           Container(
             width: double.infinity,
             color: Colors.black.withOpacity(0.5),
-            child: Text(categories.name,
+            child: Text(
+              categories.name,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
           ),
         ],
       ),

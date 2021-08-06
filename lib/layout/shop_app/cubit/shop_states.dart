@@ -46,3 +46,17 @@ class ShopSearchErrorState extends ShopStates{
 
   ShopSearchErrorState(this.error);
 }
+
+class ShopEmailVerificationSuccessState extends ShopStates{}
+class ShopEmailVerificationFailureState extends ShopStates{
+  final String error;
+
+  ShopEmailVerificationFailureState(this.error);
+}
+
+class ShopPasswordRecoverySuccessState extends ShopStates{}
+class ShopPasswordRecoveryFailureState extends ShopStates{
+  final String error;
+
+  ShopPasswordRecoveryFailureState(this.error);
+}

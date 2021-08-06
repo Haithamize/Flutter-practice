@@ -171,4 +171,43 @@ class ShopCubit extends Cubit<ShopStates>{
     });
   }
 
+
+  verifyEmailAddress() async{
+
+    await DioHelper.post(
+      path: '/woocommerce/users/${userData.id}/verification-email-resend',
+      token: token,
+      data: {
+        'token':'$token',
+      },
+    ).then((value) {
+      printFullText(value.statusMessage);
+
+
+      emit(ShopEmailVerificationSuccessState());
+    }).catchError((error){
+      print(token.toString());
+      print(error.toString());
+      emit(ShopEmailVerificationFailureState(error.toString()));
+    });
+  }
+
+  recoverPassword(String password) async{
+    await DioHelper.post(
+      path: RECOVER_PASSWORD_ZUMRA,
+      token: token,
+      data: {
+        'email':'${userData.email}',
+      },
+    ).then((value) {
+      printFullText(value.statusMessage);
+
+      emit(ShopPasswordRecoverySuccessState());
+    }).catchError((error){
+      print(token.toString());
+      print(userData.id.toString());
+      print(error.toString());
+      emit(ShopPasswordRecoveryFailureState(error.toString()));
+    });
+  }
 }

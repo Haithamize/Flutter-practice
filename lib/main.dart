@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_app/layout/shop_app/shop_layout.dart';
 import 'package:flutter_app/layout/todo_app/home_layout.dart';
 import 'package:flutter_app/modules/counter/stateful_example.dart';
 import 'package:flutter_app/modules/shop_app/on_boarding/on_boarding_screen.dart';
+import 'package:flutter_app/modules/shop_app/shop_login/cubit/login_cubit.dart';
 import 'package:flutter_app/modules/shop_app/shop_login/shop_login_screen.dart';
 import 'package:flutter_app/modules/todo/new_tasks_screen.dart';
 import 'package:flutter_app/network/local/cache_sharedpref.dart';
@@ -19,11 +22,39 @@ import 'package:flutter_app/shared/cubit/cubit.dart';
 import 'package:flutter_app/shared/cubit/states.dart';
 import 'package:flutter_app/styles/themes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    'This channel is used for important notifications.', // description
+    importance: Importance.high,
+    playSound: true);
 
-void main() async{
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('A bg message just showed up :  ${message.messageId}');
+}
+
+Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
@@ -65,8 +96,9 @@ class MyApp extends StatelessWidget {
       providers:
       [
         BlocProvider(create: (context) => NewsCubit()..getBusiness()),
+        BlocProvider(create: (context) => ShopLoginCubit()),
         BlocProvider(create: (BuildContext context) => AppCubit()..changeTheme(fromSharedPrefValue: isLight),),
-        BlocProvider(create: (BuildContext context) => ShopCubit()..getHomeDataFromApi()..getCategoriesDataFromApi()),
+        BlocProvider(create: (BuildContext context) => ShopCubit()..getHomeDataFromApi()..getCategoriesDataFromApi()..getUserDataFromApi()),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
         listener: (context,state){},
