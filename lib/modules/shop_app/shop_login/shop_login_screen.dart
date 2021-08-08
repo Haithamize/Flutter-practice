@@ -229,57 +229,54 @@ class ShopLoginScreen extends StatelessWidget {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Please enter your email',
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  buildDefaultTFF(
-                    isPassword: false,
-                    controller: controller,
-                    prefix: Icons.outgoing_mail,
-                    labelText: 'Email',
-                    type: TextInputType.emailAddress,
-                    // validate: (String value) {
-                    //   if (value.isEmpty) {
-                    //     return 'Please, Enter your password';
-                    //   }
-                    //   return null;
-                    // }
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  buildDefaultButton(
-                    () {
-                      Navigator.pop(context);
-                      print(controller.text.toString());
-                      if(controller.text.toString().isNotEmpty) {
-                        ShopLoginCubit.get(context).recoverPassword(controller.text);
-                        // Future.delayed(Duration(seconds: 2));
+          return Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Please enter your email',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                buildDefaultTFF(
+                  isPassword: false,
+                  controller: controller,
+                  prefix: Icons.outgoing_mail,
+                  labelText: 'Email',
+                  type: TextInputType.emailAddress,
+                  // validate: (String value) {
+                  //   if (value.isEmpty) {
+                  //     return 'Please, Enter your password';
+                  //   }
+                  //   return null;
+                  // }
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                buildDefaultButton(
+                  () {
+                    Navigator.pop(context);
+                    print(controller.text.toString());
+                    if(controller.text.toString().isNotEmpty) {
+                      ShopLoginCubit.get(context).recoverPassword(controller.text);
+                      // Future.delayed(Duration(seconds: 2));
 
-                      }else{
-                        makeToast(
-                          gravity: ToastGravity.BOTTOM,
-                          toastColor: Colors.yellow,
-                          message: 'The email can\'t be empty, please enter your email address',
-                        );
-                      }
-                    },
-                    'Confirm',
-                    containerColor: Colors.red,
-                  ),
-                ],
-              ),
+                    }else{
+                      makeToast(
+                        gravity: ToastGravity.BOTTOM,
+                        toastColor: Colors.yellow,
+                        message: 'The email can\'t be empty, please enter your email address',
+                      );
+                    }
+                  },
+                  'Confirm',
+                  containerColor: Colors.red,
+                ),
+              ],
             ),
           );
         });

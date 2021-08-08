@@ -48,7 +48,7 @@ class OnBoardingScreen extends StatelessWidget {
           Expanded(
             child: PageView.builder(
               onPageChanged: (index){
-                if(index == list.length){
+                if(index == list.length-1){
                   isLast = true;
                   print(isLast);
 
