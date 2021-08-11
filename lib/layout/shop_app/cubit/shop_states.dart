@@ -79,3 +79,12 @@ class ShopLoadCartItemsErrorState extends ShopStates{
 
 
 class ShopChangeCartItemNumberState extends ShopStates{}
+
+
+class ShopIncreaseOrDecreaseCartItemSuccessState extends ShopStates{}
+class ShopIncreaseOrDecreaseCartItemLoadingState extends ShopStates{}
+class ShopIncreaseOrDecreaseCartItemFailureState extends ShopStates{
+  final String error;
+
+  ShopIncreaseOrDecreaseCartItemFailureState(this.error);
+}

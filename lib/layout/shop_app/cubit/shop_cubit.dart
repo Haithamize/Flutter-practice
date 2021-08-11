@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/layout/shop_app/cubit/shop_states.dart';
+import 'package:flutter_app/models/shop_app/basket_model.dart';
 import 'package:flutter_app/models/shop_app/shop_categories_model.dart';
 import 'package:flutter_app/models/shop_app/shop_home_model.dart';
 import 'package:flutter_app/models/shop_app/shop_login_model.dart';
@@ -223,7 +224,9 @@ class ShopCubit extends Cubit<ShopStates>{
       },
       token: token
     ).then((value) {
-      printFullText(value.statusMessage);
+      print('before');
+      printFullText(value.data.toString());
+      print('after');
 
       emit(ShopAddToCartSuccessState());
     }).catchError((error){
@@ -233,6 +236,8 @@ class ShopCubit extends Cubit<ShopStates>{
   }
 
 
+  MyBasketModel myBasketModel;
+  List<Products> products = [];
   loadCartItems() async{
     emit(ShopLoadCartItemsLoadingState());
     await DioHelper.getData(
@@ -240,9 +245,9 @@ class ShopCubit extends Cubit<ShopStates>{
       token: token
     ).then((value) {
       print(value.data);
+      myBasketModel = MyBasketModel.fromJson(value.data);
+      products = myBasketModel.products;
 
-      // shopSearchModel = ShopHomeModel.fromJson(value.data);
-      // listOfSearchedItems = shopSearchModel.docs;
 
       emit(ShopLoadCartItemsSuccessState());
     }).catchError((error){
@@ -260,5 +265,28 @@ class ShopCubit extends Cubit<ShopStates>{
       currentNumberOfItems--;
       emit(ShopChangeCartItemNumberState());
     }
+  }
+
+
+  increaseOrDecreaseCartItems(id, quantity) async{
+
+    emit(ShopIncreaseOrDecreaseCartItemLoadingState());
+    await DioHelper.post(
+        path: ADD_TO_CART_ZUMRA,
+        data:
+        {
+          '_id':'$id',
+          'quantity':'$quantity',
+        },
+        token: token
+    ).then((value) {
+      printFullText(value.data.toString());
+
+
+      emit(ShopIncreaseOrDecreaseCartItemSuccessState());
+    }).catchError((error){
+      print(error.toString());
+      emit(ShopIncreaseOrDecreaseCartItemFailureState(error.toString()));
+    });
   }
 }
