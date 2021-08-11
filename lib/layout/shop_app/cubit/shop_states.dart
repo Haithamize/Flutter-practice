@@ -60,3 +60,22 @@ class ShopPasswordRecoveryFailureState extends ShopStates{
 
   ShopPasswordRecoveryFailureState(this.error);
 }
+
+class ShopAddToCartSuccessState extends ShopStates{}
+class ShopAddToCartFailureState extends ShopStates{
+  final String error;
+
+  ShopAddToCartFailureState(this.error);
+}
+
+
+class ShopLoadCartItemsLoadingState extends ShopStates{}
+class ShopLoadCartItemsSuccessState extends ShopStates{}
+class ShopLoadCartItemsErrorState extends ShopStates{
+  final String error;
+
+  ShopLoadCartItemsErrorState(this.error);
+}
+
+
+class ShopChangeCartItemNumberState extends ShopStates{}

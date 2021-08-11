@@ -14,6 +14,9 @@ const GOOGLE_AUTH_ZUMRA = '/woocommerce/auth/google';
 const RECOVER_PASSWORD_ZUMRA = '/woocommerce/auth/passwordRecoverRequest';
 // const EMAIL_VERIFICATION_ZUMRA = '/woocommerce/auth/emailVerification';
 
+const ADD_TO_CART_ZUMRA = '/woocommerce/carts';
+const LOAD_CART_ITEMS_ZUMRA = '/woocommerce/carts';
+
 String token = '';
 int id ;
 

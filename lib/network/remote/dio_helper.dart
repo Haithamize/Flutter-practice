@@ -40,7 +40,7 @@ class DioHelper {
   static Future<Response> post({
   @required String path,
     dynamic query,
-    @required Map<String,dynamic> data, //tb3n lazm ab3t data 3shan b3ml login wl data de htb2a f shakl map key and value of the email and password
+     Map<String,dynamic> data, //tb3n lazm ab3t data 3shan b3ml login wl data de htb2a f shakl map key and value of the email and password
     String token,
     String lang = 'ar',
   }) async{

@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/layout/shop_app/cubit/shop_cubit.dart';
 import 'package:flutter_app/layout/shop_app/cubit/shop_states.dart';
+import 'package:flutter_app/modules/shop_app/my_basket/my_basket_screen.dart';
 import 'package:flutter_app/modules/shop_app/search/shop_search_screen.dart';
 import 'package:flutter_app/modules/shop_app/shop_login/shop_login_screen.dart';
 import 'package:flutter_app/network/local/cache_sharedpref.dart';
@@ -94,6 +95,12 @@ class _ShopLayoutState extends State<ShopLayout> with SingleTickerProviderStateM
                   onPressed: (){
                     navigateTo(context, ShopSearchScreen());
                   }),
+              IconButton(
+                  onPressed: (){
+                    navigateTo(context, MyBasketScreen());
+                    ShopCubit.get(context).loadCartItems();
+                  },
+                  icon: Icon(Icons.shopping_cart, color: Colors.black,)),
             ],
           ),
           body: screenList[cubit.currentIndex],

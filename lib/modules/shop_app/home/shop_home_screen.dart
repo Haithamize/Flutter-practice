@@ -350,6 +350,7 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
                           color: Colors.black,
                           onPressed: () {
                             print('tapped item: ' + '${docs.id}');
+                            ShopCubit.get(context).addToCart(docs.id, 1);
                           },
                         ),
                         radius: 17,

@@ -210,4 +210,55 @@ class ShopCubit extends Cubit<ShopStates>{
       emit(ShopPasswordRecoveryFailureState(error.toString()));
     });
   }
+
+
+
+  addToCart(id, quantity) async{
+    await DioHelper.post(
+      path: ADD_TO_CART_ZUMRA,
+      data:
+      {
+        '_id':'$id',
+        'quantity':'$quantity',
+      },
+      token: token
+    ).then((value) {
+      printFullText(value.statusMessage);
+
+      emit(ShopAddToCartSuccessState());
+    }).catchError((error){
+      print(error.toString());
+      emit(ShopAddToCartFailureState(error.toString()));
+    });
+  }
+
+
+  loadCartItems() async{
+    emit(ShopLoadCartItemsLoadingState());
+    await DioHelper.getData(
+      LOAD_CART_ITEMS_ZUMRA,
+      token: token
+    ).then((value) {
+      print(value.data);
+
+      // shopSearchModel = ShopHomeModel.fromJson(value.data);
+      // listOfSearchedItems = shopSearchModel.docs;
+
+      emit(ShopLoadCartItemsSuccessState());
+    }).catchError((error){
+      print(error.toString());
+      emit(ShopLoadCartItemsErrorState(error.toString()));
+    });
+  }
+
+  int currentNumberOfItems = 0;
+  changeBasketItemCount(String mark){
+    if(mark == 'plus'){
+      currentNumberOfItems ++;
+      emit(ShopChangeCartItemNumberState());
+    }else if (mark == 'minus' && currentNumberOfItems > 0){
+      currentNumberOfItems--;
+      emit(ShopChangeCartItemNumberState());
+    }
+  }
 }
