@@ -25,6 +25,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import 'modules/shop_app/product_details/product_details_screen.dart';
+
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // title
@@ -117,7 +119,8 @@ class MyApp extends StatelessWidget {
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
 
-              home: startWidget,
+              // home: startWidget,
+              home: ProductDetailsScreen(),
               theme: lightTheme,
 
               darkTheme: darkTheme,

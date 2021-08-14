@@ -239,17 +239,28 @@ class ShopCubit extends Cubit<ShopStates>{
   MyBasketModel myBasketModel;
   List<Products> products = [];
   loadCartItems() async{
+
     emit(ShopLoadCartItemsLoadingState());
     await DioHelper.getData(
       LOAD_CART_ITEMS_ZUMRA,
       token: token
     ).then((value) {
-      print(value.data);
+      // print(value.data);
       myBasketModel = MyBasketModel.fromJson(value.data);
       products = myBasketModel.products;
 
+      double pricePerItem = 0;
+      double totalPrice = 0;
+      products.forEach((element) {
+        print(element.quantity);
+        print(element.price);
+        pricePerItem = double.parse(element.price);
+        totalPrice+= pricePerItem * (element.quantity);
+      });
+      print(totalPrice);
 
-      emit(ShopLoadCartItemsSuccessState());
+
+      emit(ShopLoadCartItemsSuccessState(totalPrice));
     }).catchError((error){
       print(error.toString());
       emit(ShopLoadCartItemsErrorState(error.toString()));
@@ -268,9 +279,9 @@ class ShopCubit extends Cubit<ShopStates>{
   }
 
 
-  increaseOrDecreaseCartItems(id, quantity) async{
+  increaseOrDecreaseCartItems(id, quantity, key) async{
 
-    emit(ShopIncreaseOrDecreaseCartItemLoadingState());
+    emit(ShopIncreaseOrDecreaseCartItemLoadingState(key));
     await DioHelper.post(
         path: ADD_TO_CART_ZUMRA,
         data:
@@ -284,9 +295,30 @@ class ShopCubit extends Cubit<ShopStates>{
 
 
       emit(ShopIncreaseOrDecreaseCartItemSuccessState());
+      loadCartItems();
     }).catchError((error){
       print(error.toString());
       emit(ShopIncreaseOrDecreaseCartItemFailureState(error.toString()));
+    });
+  }
+
+
+
+  removeCartItem(String key) async{
+
+    emit(ShopDeleteCartItemLoadingState());
+
+    await DioHelper.post(
+        path: '/woocommerce/carts/{$key}',
+
+        token: token
+    ).then((value) {
+      printFullText(value.data.toString());
+
+      emit(ShopDeleteCartItemSuccessState());
+    }).catchError((error){
+      print(error.toString());
+      emit(ShopDeleteCartItemFailureState(error.toString()));
     });
   }
 }

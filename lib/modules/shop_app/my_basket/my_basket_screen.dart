@@ -15,12 +15,15 @@ class MyBasketScreen extends StatefulWidget {
 
 class _MyBasketScreenState extends State<MyBasketScreen> {
   List<Products> products;
+  double price = 0;
 
   @override
   Widget build(BuildContext context) {
+
     return BlocConsumer<ShopCubit,ShopStates>(
         builder: (context,state){
           products = ShopCubit.get(context).products;
+
           return Conditional.single(
               fallbackBuilder: (BuildContext context) {
                 return Scaffold(
@@ -113,8 +116,8 @@ class _MyBasketScreenState extends State<MyBasketScreen> {
                                               fontSize: 11
                                           ),
                                         ),
-                                        Text(
-                                          '500 EGP',
+                                        (state is ShopIncreaseOrDecreaseCartItemLoadingState)? CircularProgressIndicator(): Text(
+                                          '$price EGP',
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.normal,
@@ -157,27 +160,30 @@ class _MyBasketScreenState extends State<MyBasketScreen> {
                 );
               },
             conditionBuilder: (BuildContext context) {
-                return (state is! ShopLoadCartItemsLoadingState && products != null );
+                return ( products != null);
             },
 
           );
         },
         listener: (context,state){
-
+          if(state is ShopLoadCartItemsSuccessState){
+            price = state.totalPrice;
+          }
         }
     );
   }
 
   Widget buildBasketItem(context,index, Products product, state){
-    // print(product.iId);
+    print(product.key);
     // print(product.wooCommerceId);
     // print(product.quantity);
     // print(ShopCubit.get(context).myBasketModel.products[index].quantity);
     // print(ShopCubit.get(context).myBasketModel.products[index].stockQuantity);
     return Dismissible(
-      key: ValueKey<String>(product.key),
+      key: UniqueKey(),
       confirmDismiss: (direction)async{
         if(direction == DismissDirection.startToEnd){
+          ShopCubit.get(context).removeCartItem(product.key);
           return true;
         }else{
           return false;
@@ -245,12 +251,12 @@ class _MyBasketScreenState extends State<MyBasketScreen> {
                           // ShopCubit.get(context).changeBasketItemCount('plus');
                           setState(() {
                             print(product.wooCommerceId);
-                            ShopCubit.get(context).increaseOrDecreaseCartItems(product.wooCommerceId, -1);
+                            ShopCubit.get(context).increaseOrDecreaseCartItems(product.wooCommerceId, -1, product.key);
                           });
                         },
                       ),
 
-                      (state is ShopIncreaseOrDecreaseCartItemLoadingState)? CircularProgressIndicator() : Text(
+                      (state is ShopIncreaseOrDecreaseCartItemLoadingState && state.key == product.key )? CircularProgressIndicator() : Text(
                         '${product.quantity}',
                         style: TextStyle(
                           color: Colors.black,
@@ -263,7 +269,7 @@ class _MyBasketScreenState extends State<MyBasketScreen> {
                           // ShopCubit.get(context).changeBasketItemCount('plus');
                           setState(() {
                             print(product.wooCommerceId);
-                            ShopCubit.get(context).increaseOrDecreaseCartItems(product.wooCommerceId, 1);
+                            ShopCubit.get(context).increaseOrDecreaseCartItems(product.wooCommerceId, 1, product.key);
                           });
                         },
                       )

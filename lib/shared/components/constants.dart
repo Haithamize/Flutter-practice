@@ -16,6 +16,7 @@ const RECOVER_PASSWORD_ZUMRA = '/woocommerce/auth/passwordRecoverRequest';
 
 const ADD_TO_CART_ZUMRA = '/woocommerce/carts';
 const LOAD_CART_ITEMS_ZUMRA = '/woocommerce/carts';
+// const DELETE_CART_ITEMS_ZUMRA = '/woocommerce/carts';
 
 String token = '';
 int id ;

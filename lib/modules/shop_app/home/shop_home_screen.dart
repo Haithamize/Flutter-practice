@@ -331,16 +331,16 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
                     SizedBox(
                       width: 5,
                     ),
-                    // if (product.discount != 0)
-                    //   Text(
-                    //     '${product.oldPrice}',
-                    //     style: TextStyle(
-                    //         fontSize: 10,
-                    //         color: Colors.grey,
-                    //         decoration: TextDecoration
-                    //             .lineThrough //de attribute bt3mli 5at 3ala el kalam el maktop akeno mashtop
-                    //         ),
-                    //   ),
+                    if (docs.regularPrice != docs.price)
+                      Text(
+                        '${docs.regularPrice}',
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                            decoration: TextDecoration
+                                .lineThrough //de attribute bt3mli 5at 3ala el kalam el maktop akeno mashtop
+                            ),
+                      ),
                     Spacer(),
                     Expanded(
                       child: CircleAvatar(

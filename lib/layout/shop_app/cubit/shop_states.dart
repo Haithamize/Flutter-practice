@@ -70,7 +70,11 @@ class ShopAddToCartFailureState extends ShopStates{
 
 
 class ShopLoadCartItemsLoadingState extends ShopStates{}
-class ShopLoadCartItemsSuccessState extends ShopStates{}
+class ShopLoadCartItemsSuccessState extends ShopStates{
+  final double totalPrice;
+
+  ShopLoadCartItemsSuccessState(this.totalPrice);
+}
 class ShopLoadCartItemsErrorState extends ShopStates{
   final String error;
 
@@ -82,9 +86,22 @@ class ShopChangeCartItemNumberState extends ShopStates{}
 
 
 class ShopIncreaseOrDecreaseCartItemSuccessState extends ShopStates{}
-class ShopIncreaseOrDecreaseCartItemLoadingState extends ShopStates{}
+class ShopIncreaseOrDecreaseCartItemLoadingState extends ShopStates{
+  final dynamic key;
+
+  ShopIncreaseOrDecreaseCartItemLoadingState(this.key);
+}
 class ShopIncreaseOrDecreaseCartItemFailureState extends ShopStates{
   final String error;
 
   ShopIncreaseOrDecreaseCartItemFailureState(this.error);
+}
+
+
+class ShopDeleteCartItemSuccessState extends ShopStates{}
+class ShopDeleteCartItemLoadingState extends ShopStates{}
+class ShopDeleteCartItemFailureState extends ShopStates{
+  final String error;
+
+  ShopDeleteCartItemFailureState(this.error);
 }
